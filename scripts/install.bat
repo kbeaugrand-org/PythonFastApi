@@ -1,1 +1,1 @@
-.\dist\WindowsService.exe --startup auto install
+.\dist\WindowsService.exe --startup auto --username "NT AUTHORITY\NetworkService" install
