@@ -2,6 +2,6 @@ from fastapi import APIRouter, HTTPException
 
 router = APIRouter()
 
-@router.post("/")
+@router.get("/")
 async def get_items():
     return [{"name": "Item Foo"}, {"name": "item Bar"}]
