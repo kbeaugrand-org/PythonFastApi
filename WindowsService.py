@@ -10,7 +10,7 @@ import uvicorn
 import yaml
 import app.main
 
-class PredictService(win32serviceutil.ServiceFramework):
+class WindowsService(win32serviceutil.ServiceFramework):
     _svc_name_ = "PythonWindowsService"
     _svc_display_name_ = "Python Windows Service"
 
@@ -18,13 +18,16 @@ class PredictService(win32serviceutil.ServiceFramework):
         win32serviceutil.ServiceFramework.__init__(self, args)
         self.hWaitStop = win32event.CreateEvent(None, 0, 0, None)
         socket.setdefaulttimeout(60)
+        self.stop_requested = False
 
     def SvcStop(self):
         self.ReportServiceStatus(win32service.SERVICE_STOP_PENDING)
         win32event.SetEvent(self.hWaitStop)
+        servicemanager.LogInfoMsg("Stopping service {serviceName}...".format(serviceName=self._svc_name_)) 
+        self.stop_requested = True
 
     def SvcDoRun(self):
-        servicemanager.LogInfoMsg("{serviceName} - is alive and well".format(serviceName=self._svc_name_)) 
+        
         config_name = "config.yml"
 
         # determine if application is a script file or frozen exe
@@ -48,7 +51,7 @@ class PredictService(win32serviceutil.ServiceFramework):
 if __name__ == '__main__':
     if len(sys.argv) == 1:
         servicemanager.Initialize()
-        servicemanager.PrepareToHostSingle(PredictService)
+        servicemanager.PrepareToHostSingle(WindowsService)
         servicemanager.StartServiceCtrlDispatcher()
     else:
-        win32serviceutil.HandleCommandLine(PredictService)
+        win32serviceutil.HandleCommandLine(WindowsService)
