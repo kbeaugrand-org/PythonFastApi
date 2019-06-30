@@ -130,6 +130,7 @@ class ExampleService(win32serviceutil.ServiceFramework):
     _svc_name_ = 'PythonExample'
     _svc_display_name_ = 'Python Example'
     _svc_description_ = 'Example of a Windows service implemented in Python.'
+    _app_exe_name_ = "app-console.exe"
  
     def __init__(self, args):
         win32serviceutil.ServiceFramework.__init__(self, args)
@@ -142,7 +143,6 @@ class ExampleService(win32serviceutil.ServiceFramework):
     
     def SvcDoRun(self):
         _log('has started')
-        exe_name = "main.exe"
 
         # determine if application is a script file or frozen exe
         if getattr(sys, 'frozen', False):
@@ -150,7 +150,8 @@ class ExampleService(win32serviceutil.ServiceFramework):
         elif __file__:
             application_path = os.path.dirname(__file__)
         
-        exe_name = os.path.join(application_path, exe_name)
+        exe_name = os.path.join(application_path, self._app_exe_name_)
+        _log('launchin subprocess for {exe_name}'.format(exe_name=exe_name))
         p = subprocess.Popen([exe_name])
         
         _log('is running in subprocess id {process_id}'.format(process_id=p.pid))

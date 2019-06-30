@@ -1,1 +1,1 @@
-.\dist\WindowsService.exe debug
+app-service.exe debug
