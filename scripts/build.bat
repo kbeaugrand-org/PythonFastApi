@@ -7,3 +7,5 @@ COPY .\scripts\install.bat .\dist\
 COPY .\scripts\debug.bat .\dist\
 COPY .\scripts\start.bat .\dist\
 COPY .\scripts\remove.bat .\dist\
+
+COPY .\scripts\config.yml .\dist\
