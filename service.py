@@ -69,7 +69,9 @@ cross-platform Python code.)
 from logging import Formatter, Handler
 import logging
 import sys
- 
+import os
+import subprocess
+
 import servicemanager
 import win32event
 import win32service
@@ -140,19 +142,28 @@ class ExampleService(win32serviceutil.ServiceFramework):
     
     def SvcDoRun(self):
         _log('has started')
+        exe_name = "main.exe"
+
+        # determine if application is a script file or frozen exe
+        if getattr(sys, 'frozen', False):
+            application_path = os.path.dirname(sys.executable)
+        elif __file__:
+            application_path = os.path.dirname(__file__)
         
+        exe_name = os.path.join(application_path, exe_name)
+        p = subprocess.Popen([exe_name])
+        
+        _log('is running in subprocess id {process_id}'.format(process_id=p.pid))
+            
         while True:               
             result = win32event.WaitForSingleObject(self._stop_event, 5000)
               
             if result == win32event.WAIT_OBJECT_0:
                 # stop requested                  
                 _log('is stopping')
+                p.kill()
                 break
-              
-            else:
-                # stop not requested                
-                _log('is running')
- 
+
         _log('has stopped')        
         
     def SvcOtherEx(self, control, event_type, data):        
