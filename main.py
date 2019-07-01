@@ -1,8 +1,13 @@
 import os
 import sys
 import yaml
+
+import logging
+from logging.handlers import RotatingFileHandler
+
 import uvicorn
-import app
+
+from app import main
 
 config_name = "config.yml"
 
@@ -17,8 +22,18 @@ config_path = os.path.join(application_path, config_name)
 with open(config_path, 'r') as stream:
     config = yaml.safe_load(stream)
 
-uvicorn.run(app, 
+logging.basicConfig(filename=config['server']['log']['file']['path'], level=config['server']['log']['level'])
+
+logger = logging.getLogger('main_logger')
+handler = RotatingFileHandler(config['server']['log']['file']['path'], 
+                               maxBytes=config['server']['log']['file']['maxBytes'], 
+                               backupCount=config['server']['log']['file']['keep'])
+logger.addHandler(handler)
+
+uvicorn.run(main.api, 
     host=config['server']['host'], 
     port=config['server']['port'], 
-    log_level=config['server']['loglevel'], 
+    log_level=config['server']['log']['level'],
+    access_log=config['server']['log']['access_log'],
+    logger=logger,
     reload=False)

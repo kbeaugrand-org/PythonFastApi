@@ -1,11 +1,15 @@
+"""
+For more information about how to create FastApis, go to: https://fastapi.tiangolo.com/#create-it
+"""
 from fastapi import Depends, FastAPI, Header, HTTPException
 
 from .routers import items
 
-app = FastAPI()
+api = FastAPI()
 
-app.include_router(
+api.include_router(
     items.router, 
     prefix="/items",
-    tags=["items"]
+    tags=["items"],
+    responses={404: {"description": "Not found"}},
     )

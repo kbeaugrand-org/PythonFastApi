@@ -1,4 +1,10 @@
 server:
-  loglevel: debug
+  log:
+    level: info
+    access_log: false
+    file: 
+      path: logs/web.log
+      maxBytes: 2000
+      keep: 10
   host: 127.0.0.1
   port: 5000
