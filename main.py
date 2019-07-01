@@ -22,7 +22,9 @@ config_path = os.path.join(application_path, config_name)
 with open(config_path, 'r') as stream:
     config = yaml.safe_load(stream)
 
-logging.basicConfig(filename=config['server']['log']['file']['path'], level=config['server']['log']['level'])
+logging.basicConfig(filename=config['server']['log']['file']['path'], 
+                    format=config['server']['log']['format'],
+                    level=config['server']['log']['level'].upper())
 
 logger = logging.getLogger('main_logger')
 handler = RotatingFileHandler(config['server']['log']['file']['path'], 

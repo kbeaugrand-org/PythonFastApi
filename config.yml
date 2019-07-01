@@ -1,7 +1,8 @@
 server:
   log:
-    level: info
+    level: debug
     access_log: false
+    format: '%(asctime)-15s %(levelname)s %(message)s'
     file: 
       path: logs/web.log
       maxBytes: 2000
